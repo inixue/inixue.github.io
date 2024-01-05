@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+      #J_firework_canvas {
+        background: #15141a;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <canvas id="J_firework_canvas"></canvas>
+      <p style="text-align: center">
+        Fork
+        <a href="https://tw93.fun" target="_blank" rel="noopener noreferrer"
+          >tw93.fun</a
+        >
+        <a
+          href="https://github.com/tw93"
+          target="_blank"
+          rel="noopener noreferrer"
+          >@tw93</a
+        >
+      </p>
+    </div>
+  </body>
+  <script>
+    var getRandomColor = function () {
+      return (
+        '#' +
+        (function (color) {
+          return (color += '0123456789abcdef'[
+            Math.floor(Math.random() * 16)
+          ]) && color.length == 6
+            ? color
+            : arguments.callee(color)
+        })('')
+      )
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      var width = window.innerWidth
+      var height = 260
+
+      var canvas = document.getElementById('J_firework_canvas')
+      canvas.width = width
+      canvas.height = height
+
+      var ctx = canvas.getContext('2d')
+
+      var points = []
+
+      var mouse = {
+        x: 0,
+        y: 9999,
+      }
+
+      function Point(x, y, speed, width, color) {
+        this.x = x
+        this.y = y
+        this.speed = speed
+        this.width = width
+        this.color = color
+        this.alpha = Math.random() - 0.1
+
+        this.active = true
+
+        this.physx = function () {
+          this.y += this.speed
+          if (this.y > canvas.height) {
+            this.kill()
+          }
+        }
+
+        this.kill = function () {
+          points.splice(points.indexOf(this), 1)
+          this.active = false
+        }
+
+        this.draw = function () {
+          ctx.beginPath()
+          ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2, true)
+          ctx.fillStyle = this.color
+          ctx.lineWidth = this.width
+
+          ctx.save()
+          ctx.globalAlpha = this.alpha
+          ctx.fill()
+          ctx.restore()
+        }
+      }
+
+      function drawFirework() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        var color = getRandomColor()
+
+        for (var i = 0; i < 2; i++) {
+          var posX = mouse.x + Math.random() * 10
+          var posY = mouse.y + Math.random() * 10
+
+          points.push(new Point(posX, posY, 1 + Math.random() * 2, 5, color)) // white
+        }
+
+        for (var i in points) {
+          if (points[i].active) {
+            points[i].draw()
+            points[i].physx()
+          }
+        }
+        requestAnimationFrame(drawFirework)
+      }
+
+      drawFirework()
+
+      document.onmousemove = function (e) {
+        mouse.x = e.pageX
+        mouse.y = e.pageY
+      }
+      document.onmouseout = function (e) {
+        mouse.x = 0
+        mouse.y = 9999
+      }
+    })
+  </script>
+</html>
