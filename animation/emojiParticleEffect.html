@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emoji Particle Effect</title>
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+      }
+
+      #emoji-container {
+        cursor: pointer;
+      }
+
+      .emoji {
+        font-size: 5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="emoji-container">
+      <span class="emoji">😊</span>
+    </div>
+    <script>
+      // script.js
+      document
+        .getElementById('emoji-container')
+        .addEventListener('click', function (e) {
+          const emoji = e.target
+
+          // 创建粒子效果
+          for (let i = 0; i < 30; i++) {
+            createParticle(e.clientX, e.clientY)
+          }
+
+          // 使 emoji 消失
+          emoji.style.display = 'none'
+        })
+
+      function createParticle(x, y) {
+        const particle = document.createElement('span')
+        particle.classList.add('emoji')
+        particle.innerText = '✨'
+        document.body.appendChild(particle)
+
+        const animation = particle.animate(
+          [
+            {
+              transform: `translate(-50%, -50%) scale(0)`,
+              opacity: 1,
+              offset: 0,
+            },
+            {
+              transform: `translate(${Math.random() * 200 - 100}px, ${
+                Math.random() * 200 - 100
+              }px) scale(1)`,
+              opacity: 0,
+              offset: 1,
+            },
+          ],
+          {
+            duration: Math.random() * 1000 + 500,
+            easing: 'ease-out',
+            delay: Math.random() * 10,
+          }
+        )
+
+        animation.onfinish = () => particle.remove()
+        particle.style.left = `${x}px`
+        particle.style.top = `${y}px`
+        particle.style.position = 'absolute'
+      }
+    </script>
+  </body>
+</html>
